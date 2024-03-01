@@ -7,58 +7,58 @@ Vitual Terminal
 
 {{define "content"}}
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1 class="text-center">Virtual Terminal</h1>
-      <hr>
+<h1 class="text-center">Virtual Terminal</h1>
 
-      <div class="alert alert-danger text-center d-none" id="card-messages"></div>
-      <form action="/payment-succeeded" method="post" name="charge_form" id="charge_form"
-        class="d-block needs-validation charge-form" autocomplete="off" novalidate="">
+<hr>
+<div class="alert alert-danger text-center d-none" id="card-messages"></div>
 
-        <div class="mb-3">
-          <label for="amount" class="form-label">amount</label>
-          <input type="text" class="form-control" id="amount" name="amount" required="" autocomplete="amount-new">
-        </div>
+<form action="/payment-succeeded" method="post" name="charge_form" id="charge_form"
+  class="d-block needs-validation charge-form" autocomplete="off" novalidate="">
 
-        <div class="mb-3">
-          <label for="cardholder" class="form-label">Cardholder</label>
-          <input type="text" class="form-control" id="cardholder" name="cardholder" required=""
-            autocomplete="cardholder-new">
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="text" class="form-control" id="email" name="email" required="" autocomplete="email-new">
-        </div>
+  <div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <input type="text" class="form-control" id="amount" name="amount" required="" autocomplete="amount-new">
+  </div>
 
-        <!-- card number built by stripe -->
-        <div class="mb-3">
-          <label for="card-element" class="form-label">Credit Card</label>
-          <div class="form-control" id="card-element"></div>
-          <div class="alert-danger tect-center" id="card-errors" role="alert"></div>
-          <div class="alert-success tect-center" id="card-success" role="alert"></div>
-        </div>
-        <hr>
-        <a href="javascript:void(0)" id="pay-button" class="btn btn-primary" onclick="val()">Charge Card</a>
-        <div class="text-center d-none" id="processing-payment">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
+  <div class="mb-3">
+    <label for="cardholder-name" class="form-label">Cardholder</label>
+    <input type="text" class="form-control" id="cardholder-name" name="cardholder" required=""
+      autocomplete="cardholder-name-new">
+  </div>
+  <div class="mb-3">
+    <label for="cardholder-email" class="form-label">Email</label>
+    <input type="email" class="form-control" id="cardholder-email" name="email" required=""
+      autocomplete="cardholder-email-new">
+  </div>
 
-        <input type="hidden" name="payment_intent" id="payment_intent">
-        <input type="hidden" name="payment_method" id="payment_method">
-        <input type="hidden" name="payment_amount" id="payment_amount">
-        <input type="hidden" name="payment_currency" id="payment_currency">
+  <!-- card number built by stripe -->
+  <div class="mb-3">
+    <label for="card-element" class="form-label">Credit Card</label>
+    <div class="form-control" id="card-element"></div>
+    <div class="alert-danger text-center" id="card-errors" role="alert"></div>
+    <div class="alert-success text-center" id="card-success" role="alert"></div>
+  </div>
 
-      </form>
+  <hr>
+
+  <a id="pay-button" href="javascript:void(0)" class="btn btn-primary" onclick="val()">Charge Card</a>
+
+  <div class="text-center d-none" id="processing-payment">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-</div>
+
+  <input type="hidden" name="payment_intent" id="payment_intent">
+  <input type="hidden" name="payment_method" id="payment_method">
+  <input type="hidden" name="payment_amount" id="payment_amount">
+  <input type="hidden" name="payment_currency" id="payment_currency">
+
+</form>
 
 
-</div>
+
+
 
 {{end}}
 
@@ -66,8 +66,8 @@ Vitual Terminal
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
-  let card
-  let stripe
+  let card;
+  let stripe;
   const cardMessages = document.getElementById("card-messages");
   const payButton = document.getElementById("pay-button");
   const processing = document.getElementById("processing-payment");
@@ -75,19 +75,39 @@ Vitual Terminal
   stripe = Stripe('pk_test_51ObramDQjpQrxGsC7KJuDzuCu08G6DD9XNpNpoFPd3AdrJiOoiIqkqP17vL9NF31fcU1PDHPgpua96jJB1EUcbBF00nymp22AS');
 
   function hidePayButton() {
-    payButton.classList.add('d-none');
-    processing.classList.remove('d-none');
+    payButton.classList.add("d-none");
+    processing.classList.remove("d-none");
+  }
+  function showPayButton() {
+    payButton.classList.remove("d-none");
+    processing.classList.add("d-none");
+  }
+
+  function showCardError(msg) {
+    cardMessages.classList.add("alert-danger");
+    cardMessages.classList.remove("alert-success");
+    cardMessages.classList.remove("d-none");
+    cardMessages.innertext = msg;
+
+  }
+
+  function showCardSuccess() {
+    cardMessages.classList.remove("alert-danger");
+    cardMessages.classList.add("alert-success");
+    cardMessages.classList.remove("d-none");
+    cardMessages.innertext = "Transaction Complete";
+
   }
 
   function val() {
-    let form = document.getElementById('charge_form');
+    let form = document.getElementById("charge_form");
     if (form.checkValidity() === false) {
       this.event.preventDefault();
       this.event.stopPropagation();
-      form.classList.add('was-validated');
+      form.classList.add("was-validated");
       return
     }
-    form.classList.add('was-validated');
+    form.classList.add("was-validated");
     hidePayButton();
 
     let amountToCharge = String(parseFloat(document.getElementById("amount").value) * 100);
@@ -95,24 +115,65 @@ Vitual Terminal
     let payload = {
       amount: amountToCharge,
       currency: "usd",
-      <!-- payment_method: card,
-      email: document.getElementById("email").value,
-      cardholder: document.getElementById("cardholder").value -->
-    }
+     // <!-- payment_method: card,
+      //email: document.getElementById("cardholder-email").value,
+      //cardholder: document.getElementById("cardholder-name").value -->
+    };
     const requestOptions = {
 
-      method: 'POST',
+      method: 'post',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     };
 
-  fetch("https://localhost:8081/api/paayment-intent", requestOptions).then(response => response.text())
-  .then(response =>
+    fetch("http://localhost:8081/api/payment-intent", requestOptions)
+      .then(response => response.text())
+      .then(response => {
+        let data;
+        try {
+          data = JSON.parse(response);
+          stripe.confirmCardPayment(data.client_secret, {
+            payment_method: {
+              card: card,
+              billing_details: {
+                name: document.getElementById("cardholder-name").value,
 
+              }
+            }
+
+          }).then(function (result) {
+            if (result.error) {
+              // card declined, or something went wrong
+              showCardError(result.error.message);
+              showPayButton()
+            } else if (result.paymentIntent) {
+              if (result.paymentIntent.status === "succeeded") {
+                // card accepted
+                document.getElementById("payment_method").value = result.paymentIntent.payment_method_types[0];
+                document.getElementById("payment_intent").value = result.paymentIntent.id;
+                document.getElementById("payment_amount").value = result.paymentIntent.amount;
+                document.getElementById("payment_currency").value = result.paymentIntent.currency;
+                processing.classList.add("d-none");
+                showCardSuccess();
+                //would submit form
+              };
+            }
+          })
+        } catch (error) {
+          console.log(error);
+          showCardError("An error occurred, please try again");
+          showPayButton();
+        }
+
+      })
   }
+
+
+
+
 
   (function () {
     const elements = stripe.elements();
@@ -129,7 +190,7 @@ Vitual Terminal
     });
     card.mount("#card-element");
     //check for input errors
-    card.on('change', function (event) {
+    card.addEventListener('change', function (event) {
       var displayError = document.getElementById("card-errors");
       if (event.error) {
         displayError.classList.remove('d-none');

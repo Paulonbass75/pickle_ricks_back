@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	cards "pickle_ricks_back/internal/cards"
+	"pickle_ricks_back/internal/cards"
 	"strconv"
 )
 
@@ -14,7 +14,7 @@ type stripePayload struct {
 
 type jsonResponse struct {
 	OK      bool   `json:"ok"`
-	Msg     string `json:"msg,omitempty"`
+	Message     string `json:"message,omitempty"`
 	Content string `json:"content,omitempty"`
 	ID      int    `json:"id,omitempty"`
 }
@@ -50,7 +50,7 @@ func (app *application) GetPaymentIntent(w http.ResponseWriter, r *http.Request)
 	if okay {
 		out, err := json.MarshalIndent(pi, "", "   ")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.errorlog.Println(err)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
@@ -59,7 +59,7 @@ func (app *application) GetPaymentIntent(w http.ResponseWriter, r *http.Request)
 		jsn := jsonResponse{
 
 			OK:      false,
-			Msg:     msg,
+			Message: msg,
 			Content: "",
 		}
 		out, err := json.MarshalIndent(jsn, "", "   ")

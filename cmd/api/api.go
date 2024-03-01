@@ -49,9 +49,9 @@ func main() {
 	var cfg config
 
 	flag.IntVar(&cfg.port, "port", 8081, "port to listen on")
-	flag.StringVar(&cfg.env, "env", "development", "environment {development | production | maintenence}")
-
-	flag.Parse()
+	flag.StringVar(&cfg.env, "env", "development", "Application environment {development | production | maintenence}")
+	
+    flag.Parse()
 
 	cfg.stripe.key = os.Getenv("STRIPE_KEY")
 	cfg.stripe.secret = os.Getenv("STRIPE_SECRET")
