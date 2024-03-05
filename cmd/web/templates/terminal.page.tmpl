@@ -72,7 +72,7 @@ Vitual Terminal
   const payButton = document.getElementById("pay-button");
   const processing = document.getElementById("processing-payment");
 
-  stripe = Stripe('pk_test_51ObramDQjpQrxGsC7KJuDzuCu08G6DD9XNpNpoFPd3AdrJiOoiIqkqP17vL9NF31fcU1PDHPgpua96jJB1EUcbBF00nymp22AS');
+  stripe = Stripe({{.API }});
 
   function hidePayButton() {
     payButton.classList.add("d-none");
@@ -127,9 +127,9 @@ Vitual Terminal
         'Content-type': 'application/json'
       },
       body: JSON.stringify(payload),
-    };
+    }
 
-    fetch("http://localhost:8081/api/payment-intent", requestOptions)
+    fetch("{{index .StringMap "publishable_key"}}", requestOptions)
       .then(response => response.text())
       .then(response => {
         let data;
