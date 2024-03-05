@@ -22,7 +22,7 @@ Vitual Terminal
 
   <div class="mb-3">
     <label for="cardholder-name" class="form-label">Cardholder</label>
-    <input type="text" class="form-control" id="cardholder-name" name="cardholder" required=""
+    <input type="text" class="form-control" id="cardholder-name" name="cardholder_name" required=""
       autocomplete="cardholder-name-new">
   </div>
   <div class="mb-3">
@@ -159,6 +159,8 @@ Vitual Terminal
                 processing.classList.add("d-none");
                 showCardSuccess();
                 //would submit form
+                document.getElementById("charge_form").submit();
+
               };
             }
           })
