@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"github.com/joho/godotenv"
 )
 
 const version = "1.0.0"
@@ -57,6 +58,10 @@ func main() {
 	flag.StringVar(&cfg.api, "api", "http://localhost:8081", "URL to API")
 
 	flag.Parse()
+
+	if err := godotenv.Load(); err != nil {
+    log.Fatal("Error loading .env file")
+}
 
 	cfg.stripe.key = os.Getenv("STRIPE_KEY")
 	cfg.stripe.secret = os.Getenv("STRIPE_SECRET")
