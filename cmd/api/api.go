@@ -1,6 +1,7 @@
 package main
 
 import (
+	"pickle_ricks_back/internal/driver"
 	"flag"
 	"fmt"
 	"log"
@@ -50,6 +51,7 @@ func main() {
 
 	flag.IntVar(&cfg.port, "port", 8081, "port to listen on")
 	flag.StringVar(&cfg.env, "env", "development", "Application environment {development | production | maintenence}")
+	flag.StringVar(&cfg.db.dsn, "dsn", "paul:password1@tcp(localhost:3306)/pickle_test?parseTime=true&tls=false", "DSN")
 	
     flag.Parse()
 
@@ -59,13 +61,19 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	conn, err := driver.OpenDB(cfg.db.dsn)
+	if err!= nil {
+        log.Fatal(err)
+    }
+	defer conn.Close()
+
 	app := &application{
 		config:   cfg,
 		infoLog:  infoLog,
 		errorlog: errorLog,
 		version:  version,
 	}
-	err := app.serve()
+	err = app.serve()
 	if err != nil {
 		log.Fatal(err)
 	}

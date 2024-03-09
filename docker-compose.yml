@@ -1,0 +1,20 @@
+# create yaml file for maria db
+
+
+version: '11.3.1'
+volumes:
+  data:
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password1
+      MYSQL_DATABASE: pickle_test
+      MYSQL_USER: paul
+      MYSQL_PASSWORD: password1
+
+    volumes:
+      - data:/var/lib/mysql
+    ports:
+      - "3306:3306"
