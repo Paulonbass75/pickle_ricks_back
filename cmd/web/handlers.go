@@ -1,14 +1,15 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"pickle_ricks_back/models"
+)
 
 func (app *application) VirtualTerminal(w http.ResponseWriter, r *http.Request) {
-stringMap := make(map[string]string)
-stringMap["publishable_key"] = app.config.stripe.key
 
 	if err := app.renderTemplate(w, r, "terminal", &templateData{
-		StringMap: stringMap,
-	}); err != nil {
+		
+	}, "stripe-js"); err != nil {
 		app.errorlog.Println(err)
 	}
 }
@@ -24,7 +25,7 @@ func (app *application) PaymentSucceeded(w http.ResponseWriter, r *http.Request)
 	email := r.Form.Get("email")
 	paymentIntent := r.Form.Get("payment_intent")
 	paymentMethod := r.Form.Get("payment_method")
-	paymentAmount := r.Form.Get("amount")
+	paymentAmount := r.Form.Get("payment_amount")
 	paymentCurrency := r.Form.Get("payment_Currency")
 
 	data := make(map[string]interface{})
@@ -39,4 +40,25 @@ func (app *application) PaymentSucceeded(w http.ResponseWriter, r *http.Request)
 	}); err != nil {
 		app.errorlog.Println(err)
 	}
+}
+
+func (app *application) ChargeOnce(w http.ResponseWriter, r *http.Request) {
+
+	meseeks := models.Meseeks{
+		ID:             1,
+		Name:           "Mr. Meseeks",
+		Description:    "I'm Mr. Meeseeks, look at me!",
+		InventoryLevel: 10,
+		Price:          1000,
+	}
+
+	data := make(map[string]interface{})
+	data["meseeks"] = meseeks
+
+	if err := app.renderTemplate(w, r, "buy-once", &templateData{
+		Data: data,
+	}, "stripe-js"); err != nil {
+		app.errorlog.Println(err)
+	}
+
 }
