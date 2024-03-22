@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"pickle_ricks_back/internal/cards"
 	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type stripePayload struct {
@@ -71,4 +73,22 @@ func (app *application) GetPaymentIntent(w http.ResponseWriter, r *http.Request)
 
 	}
 
+}
+
+func (app *application) GetMeseeksByID(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	meseeksID, _ := strconv.Atoi(id)
+	meseeks, err := app.DB.GetMeseeks(meseeksID)
+	if err != nil {
+		app.errorlog.Println(err)
+		return
+	}
+	out, err := json.MarshalIndent(meseeks, "", "   ")
+	if err != nil {
+		app.errorlog.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+	return
 }

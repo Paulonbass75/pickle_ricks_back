@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"pickle_ricks_back/internal/driver"
 	"net/http"
 	"os"
+	"pickle_ricks_back/internal/driver"
+	"pickle_ricks_back/models"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -35,6 +36,7 @@ type application struct {
 	errorlog      *log.Logger
 	templateCache map[string]*template.Template
 	version       string
+	DB models.DBModel
 }
 
 func (app *application) serve() error {
@@ -86,6 +88,7 @@ func main() {
 		errorlog:      errorLog,
 		templateCache: tc,
 		version:       version,
+		DB: models.DBModel{DB: conn},
 	}
 	err = app.serve()
 	if err != nil {

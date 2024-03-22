@@ -1,12 +1,13 @@
 package main
 
 import (
-	"pickle_ricks_back/internal/driver"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"pickle_ricks_back/internal/driver"
+	"pickle_ricks_back/models"
 	"time"
 )
 
@@ -29,6 +30,7 @@ type application struct {
 	infoLog  *log.Logger
 	errorlog *log.Logger
 	version  string
+	DB models.DBModel
 }
 
 func (app *application) serve() error {
@@ -72,6 +74,9 @@ func main() {
 		infoLog:  infoLog,
 		errorlog: errorLog,
 		version:  version,
+		DB: models.DBModel{
+            DB: conn,
+        },
 	}
 	err = app.serve()
 	if err != nil {
